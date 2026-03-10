@@ -1,0 +1,15 @@
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Transforms/bin/Debug/net10.0/DataFlowMapper.Transforms.deps.json
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Transforms/bin/Debug/net10.0/DataFlowMapper.Transforms.dll
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Transforms/bin/Debug/net10.0/DataFlowMapper.Transforms.pdb
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Transforms/bin/Debug/net10.0/DataFlowMapper.Core.dll
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Transforms/bin/Debug/net10.0/DataFlowMapper.Core.pdb
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Transforms/obj/Debug/net10.0/DataFlowMapper.Transforms.csproj.AssemblyReference.cache
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Transforms/obj/Debug/net10.0/DataFlowMapper.Transforms.GeneratedMSBuildEditorConfig.editorconfig
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Transforms/obj/Debug/net10.0/DataFlowMapper.Transforms.AssemblyInfoInputs.cache
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Transforms/obj/Debug/net10.0/DataFlowMapper.Transforms.AssemblyInfo.cs
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Transforms/obj/Debug/net10.0/DataFlowMapper.Transforms.csproj.CoreCompileInputs.cache
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Transforms/obj/Debug/net10.0/DataFlow.60E3B978.Up2Date
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Transforms/obj/Debug/net10.0/DataFlowMapper.Transforms.dll
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Transforms/obj/Debug/net10.0/refint/DataFlowMapper.Transforms.dll
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Transforms/obj/Debug/net10.0/DataFlowMapper.Transforms.pdb
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Transforms/obj/Debug/net10.0/ref/DataFlowMapper.Transforms.dll

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\DataFlowMapper.Core\DataFlowMapper.Core.csproj" />
+    <ProjectReference Include="..\DataFlowMapper.Connectors\DataFlowMapper.Connectors.csproj" />
+    <ProjectReference Include="..\DataFlowMapper.Transforms\DataFlowMapper.Transforms.csproj" />
+    <ProjectReference Include="..\DataFlowMapper.Executor\DataFlowMapper.Executor.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.5" />
+    <PackageReference Include="YamlDotNet" Version="16.3.0" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>

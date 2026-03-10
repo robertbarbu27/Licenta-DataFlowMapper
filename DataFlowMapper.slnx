@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="DataFlowMapper.API/DataFlowMapper.API.csproj" />
+  <Project Path="DataFlowMapper.Connectors/DataFlowMapper.Connectors.csproj" />
+  <Project Path="DataFlowMapper.Core/DataFlowMapper.Core.csproj" />
+  <Project Path="DataFlowMapper.Executor/DataFlowMapper.Executor.csproj" />
+  <Project Path="DataFlowMapper.Transforms/DataFlowMapper.Transforms.csproj" />
+</Solution>

@@ -1,0 +1,15 @@
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Connectors/bin/Debug/net10.0/DataFlowMapper.Connectors.deps.json
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Connectors/bin/Debug/net10.0/DataFlowMapper.Connectors.dll
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Connectors/bin/Debug/net10.0/DataFlowMapper.Connectors.pdb
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Connectors/bin/Debug/net10.0/DataFlowMapper.Core.dll
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Connectors/bin/Debug/net10.0/DataFlowMapper.Core.pdb
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Connectors/obj/Debug/net10.0/DataFlowMapper.Connectors.csproj.AssemblyReference.cache
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Connectors/obj/Debug/net10.0/DataFlowMapper.Connectors.GeneratedMSBuildEditorConfig.editorconfig
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Connectors/obj/Debug/net10.0/DataFlowMapper.Connectors.AssemblyInfoInputs.cache
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Connectors/obj/Debug/net10.0/DataFlowMapper.Connectors.AssemblyInfo.cs
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Connectors/obj/Debug/net10.0/DataFlowMapper.Connectors.csproj.CoreCompileInputs.cache
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Connectors/obj/Debug/net10.0/DataFlow.13D29986.Up2Date
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Connectors/obj/Debug/net10.0/DataFlowMapper.Connectors.dll
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Connectors/obj/Debug/net10.0/refint/DataFlowMapper.Connectors.dll
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Connectors/obj/Debug/net10.0/DataFlowMapper.Connectors.pdb
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Connectors/obj/Debug/net10.0/ref/DataFlowMapper.Connectors.dll
