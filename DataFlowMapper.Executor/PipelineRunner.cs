@@ -84,7 +84,8 @@ public class PipelineRunner
                         ?? pipeline.Sources.First();
                     var targetConnector = _connectorFactory.Create(targetSource with
                     {
-                        ConnectionString = targetSource.ConnectionString
+                        ConnectionString = target.ConnectionString ?? targetSource.ConnectionString,
+                        Type = target.Type ?? targetSource.Type
                     });
 
                     var mapped = ApplyMappings(processed, target.Mappings);

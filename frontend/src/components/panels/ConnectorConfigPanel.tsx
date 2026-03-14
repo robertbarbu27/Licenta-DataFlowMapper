@@ -31,7 +31,7 @@ const btnStyle = (color: string): React.CSSProperties => ({
 
 export function ConnectorConfigPanel({ nodeType, subtype, initialData, onSave, onClose }: Props) {
   const [connectionString, setConnectionString] = useState(
-    (initialData as SourceConfig)?.connectionString ?? ''
+    (initialData as SourceConfig)?.connectionString ?? (initialData as TargetConfig)?.connectionString ?? ''
   );
   const [table, setTable] = useState((initialData as SourceConfig & TargetConfig)?.table ?? '');
   const [query, setQuery] = useState((initialData as SourceConfig)?.query ?? '');
@@ -83,6 +83,8 @@ export function ConnectorConfigPanel({ nodeType, subtype, initialData, onSave, o
         id: (initialData as TargetConfig)?.id ?? crypto.randomUUID(),
         table,
         connectorId: subtype,
+        connectionString,
+        type: subtype,
         mode,
         mappings,
       } as TargetConfig);
@@ -190,8 +192,38 @@ export function ConnectorConfigPanel({ nodeType, subtype, initialData, onSave, o
           {nodeType === 'target' && (
             <>
               <div>
-                <label style={labelStyle}>Table / Collection</label>
-                <input style={inputStyle} value={table} onChange={(e) => setTable(e.target.value)} placeholder="output_table" />
+                <label style={labelStyle}>Connection String</label>
+                <input
+                  style={inputStyle}
+                  value={connectionString}
+                  onChange={(e) => setConnectionString(e.target.value)}
+                  placeholder="Host=db;Port=5432;Database=dataflow;Username=postgres;Password=dev123"
+                />
+              </div>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <button style={btnStyle('#0284c7')} onClick={handleTest} disabled={testing}>
+                  {testing ? 'Se testeaza...' : 'Testeaza conexiunea'}
+                </button>
+                {testResult && (
+                  <span style={{ fontSize: 12, color: testResult.success ? '#22c55e' : '#ef4444' }}>
+                    {testResult.success ? `✓ ${testResult.tables.length} tabele` : `✗ ${testResult.error}`}
+                  </span>
+                )}
+              </div>
+              {testResult?.success && testResult.tables.length > 0 && (
+                <div>
+                  <label style={labelStyle}>Alege tabelul target</label>
+                  <select style={{ ...inputStyle }} value={table} onChange={(e) => setTable(e.target.value)}>
+                    <option value="">-- alege sau scrie manual --</option>
+                    {testResult.tables.map((t) => (
+                      <option key={t.name} value={t.name}>{t.schema ? `${t.schema}.${t.name}` : t.name}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              <div>
+                <label style={labelStyle}>Table / Collection (manual)</label>
+                <input style={inputStyle} value={table} onChange={(e) => setTable(e.target.value)} placeholder="orders_completed" />
               </div>
               <div>
                 <label style={labelStyle}>Write Mode</label>

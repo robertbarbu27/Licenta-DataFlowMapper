@@ -102,7 +102,14 @@ public class PostgreSqlConnector : IConnector
     {
         await using var conn = new NpgsqlConnection(_connectionString);
         await conn.OpenAsync(cancellationToken);
-        var columns = string.Join(", ", data.Columns.Cast<DataColumn>().Select(c => c.ColumnName));
+
+        // Auto-create table if it doesn't exist
+        var colDefs = string.Join(", ", data.Columns.Cast<DataColumn>()
+            .Select(c => $"\"{c.ColumnName}\" TEXT"));
+        await using (var cmd = new NpgsqlCommand($"CREATE TABLE IF NOT EXISTS {table} ({colDefs})", conn))
+            await cmd.ExecuteNonQueryAsync(cancellationToken);
+
+        var columns = string.Join(", ", data.Columns.Cast<DataColumn>().Select(c => $"\"{c.ColumnName}\""));
         await using var writer = await conn.BeginBinaryImportAsync($"COPY {table} ({columns}) FROM STDIN (FORMAT BINARY)", cancellationToken);
         foreach (DataRow row in data.Rows)
         {

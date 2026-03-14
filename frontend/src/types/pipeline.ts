@@ -19,6 +19,8 @@ export interface TargetConfig {
   id: string;
   table: string;
   connectorId: string;
+  connectionString?: string;
+  type?: string;
   mode: WriteMode;
   mappings: FieldMapping[];
 }
