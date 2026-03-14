@@ -18,5 +18,14 @@ public class PipelineStore
         return pipeline;
     }
 
+    public bool Update(Guid id, Pipeline pipeline)
+    {
+        if (!_store.ContainsKey(id)) return false;
+        pipeline.Id = id;
+        pipeline.CreatedAt = _store[id].CreatedAt;
+        _store[id] = pipeline;
+        return true;
+    }
+
     public bool Remove(Guid id) => _store.Remove(id);
 }
