@@ -33,6 +33,13 @@ public class PipelinesController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
+    [HttpPut("{id:guid}")]
+    public IActionResult Update(Guid id, [FromBody] Pipeline pipeline)
+    {
+        if (!_store.Update(id, pipeline)) return NotFound();
+        return Ok(_store.GetById(id));
+    }
+
     [HttpDelete("{id:guid}")]
     public IActionResult Delete(Guid id)
     {
