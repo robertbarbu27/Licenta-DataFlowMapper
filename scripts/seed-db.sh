@@ -126,6 +126,28 @@ INSERT INTO orders (customer_id, product, quantity, unit_price, status) VALUES
   (8,  'Standing Desk',               1,  499.00, 'completed'),
   (9,  'Office Chair',                2,  249.00, 'pending');
 
+-- ============================================================
+-- TARGET TABLES (empty, ready to receive pipeline output)
+-- ============================================================
+
+CREATE TABLE orders_completed (
+  id          INT,
+  customer_id INT,
+  product     TEXT,
+  quantity    INT,
+  unit_price  NUMERIC(10,2),
+  status      TEXT,
+  ordered_at  TIMESTAMP
+);
+
+CREATE TABLE customers_clean (
+  id         INT,
+  full_name  TEXT,
+  email      TEXT,
+  country    TEXT,
+  created_at TIMESTAMP
+);
+
 SQL
 
 echo ""
