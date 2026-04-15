@@ -13,3 +13,4 @@
 /Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Transforms/obj/Debug/net10.0/refint/DataFlowMapper.Transforms.dll
 /Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Transforms/obj/Debug/net10.0/DataFlowMapper.Transforms.pdb
 /Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Transforms/obj/Debug/net10.0/ref/DataFlowMapper.Transforms.dll
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Transforms/obj/Debug/net10.0/DataFlowMapper.Transforms.sourcelink.json

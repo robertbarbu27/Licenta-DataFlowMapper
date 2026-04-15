@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DataFlowMapper.Transforms")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b92a101680eba4692d091ee8aed090919489ef8d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dcab5881e791f9016915bacc49496c5938038128")]
 [assembly: System.Reflection.AssemblyProductAttribute("DataFlowMapper.Transforms")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DataFlowMapper.Transforms")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
