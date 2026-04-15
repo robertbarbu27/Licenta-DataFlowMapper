@@ -17,3 +17,4 @@
 /Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Executor/obj/Debug/net10.0/refint/DataFlowMapper.Executor.dll
 /Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Executor/obj/Debug/net10.0/DataFlowMapper.Executor.pdb
 /Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Executor/obj/Debug/net10.0/ref/DataFlowMapper.Executor.dll
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Executor/obj/Debug/net10.0/DataFlowMapper.Executor.sourcelink.json

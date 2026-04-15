@@ -25,8 +25,30 @@ public class PipelineRunner
         CancellationToken cancellationToken)
     {
         var stats = new ExecutionStats();
-        var stages = BuildTransformStages(pipeline.Transforms);
+        var statsLock = new object();
 
+        var subgraphs = ExecutionGraph.Build(pipeline);
+
+        await EmitLog(onLog, LogLevel.Info, "Pipeline execution started", pipeline.Name);
+        await EmitLog(onLog, LogLevel.Info, $"Detected {subgraphs.Count} independent branch(es)", null);
+
+        var branchTasks = subgraphs.Select(sg =>
+            RunSubgraphAsync(sg, stats, statsLock, onLog, onProgress, cancellationToken));
+
+        await Task.WhenAll(branchTasks);
+
+        await EmitLog(onLog, LogLevel.Ok, "Pipeline execution completed", pipeline.Name);
+        return stats;
+    }
+
+    private async Task RunSubgraphAsync(
+        ExecutionSubgraph subgraph,
+        ExecutionStats stats,
+        object statsLock,
+        Func<object, Task>? onLog,
+        Func<ExecutionStats, Task>? onProgress,
+        CancellationToken cancellationToken)
+    {
         var channel = Channel.CreateBounded<(SourceConfig source, DataTable chunk)>(
             new BoundedChannelOptions(4)
             {
@@ -35,13 +57,12 @@ public class PipelineRunner
                 SingleReader = false
             });
 
-        await EmitLog(onLog, LogLevel.Info, "Pipeline execution started", pipeline.Name);
-
+        // Read all sources in this branch concurrently
         var readTask = Task.Run(async () =>
         {
             try
             {
-                foreach (var source in pipeline.Sources)
+                var sourceTasks = subgraph.Sources.Select(async source =>
                 {
                     var connector = _connectorFactory.Create(source);
                     var query = source.Query ?? $"SELECT * FROM {source.Table}";
@@ -49,10 +70,12 @@ public class PipelineRunner
 
                     await foreach (var chunk in connector.ReadChunksAsync(query, 1000, cancellationToken))
                     {
-                        stats.RowsRead += chunk.Rows.Count;
+                        lock (statsLock) stats.RowsRead += chunk.Rows.Count;
                         await channel.Writer.WriteAsync((source, chunk), cancellationToken);
                     }
-                }
+                });
+
+                await Task.WhenAll(sourceTasks);
             }
             finally
             {
@@ -60,28 +83,21 @@ public class PipelineRunner
             }
         }, cancellationToken);
 
+        // Process chunks: transform → write
         var processTask = Task.Run(async () =>
         {
             await foreach (var (source, chunk) in channel.Reader.ReadAllAsync(cancellationToken))
             {
                 var processed = chunk;
 
-                foreach (var stage in stages)
-                {
-                    var stageTasks = stage.Select(t => Task.Run(() =>
-                    {
-                        var transform = _transformFactory.Get(t.Type);
-                        return transform.Apply(processed.Copy(), t);
-                    }, cancellationToken)).ToList();
+                foreach (var stage in subgraph.TransformStages)
+                    processed = ExecutionGraph.ApplyStage(processed, stage, _transformFactory, cancellationToken);
 
-                    var results = await Task.WhenAll(stageTasks);
-                    processed = results.LastOrDefault() ?? processed;
-                }
-
-                var writeTasks = pipeline.Targets.Select(async target =>
+                var writeTasks = subgraph.Targets.Select(async target =>
                 {
-                    var targetSource = pipeline.Sources.FirstOrDefault(s => s.Id == target.ConnectorId)
-                        ?? pipeline.Sources.First();
+                    var targetSource = subgraph.Sources.FirstOrDefault(s => s.Id == target.ConnectorId)
+                        ?? subgraph.Sources.First();
+
                     var targetConnector = _connectorFactory.Create(targetSource with
                     {
                         ConnectionString = target.ConnectionString ?? targetSource.ConnectionString,
@@ -90,13 +106,14 @@ public class PipelineRunner
 
                     var mapped = ApplyMappings(processed, target.Mappings);
                     await targetConnector.WriteAsync(target.Table, mapped, cancellationToken);
-                    stats.RowsWritten += mapped.Rows.Count;
 
+                    lock (statsLock) stats.RowsWritten += mapped.Rows.Count;
                     await EmitLog(onLog, LogLevel.Ok, $"Written {mapped.Rows.Count} rows to {target.Table}", target.Id);
                 });
 
                 await Task.WhenAll(writeTasks);
-                stats.ChunksDone++;
+
+                lock (statsLock) stats.ChunksDone++;
 
                 if (onProgress != null)
                     await onProgress(stats);
@@ -104,33 +121,48 @@ public class PipelineRunner
         }, cancellationToken);
 
         await Task.WhenAll(readTask, processTask);
-        await EmitLog(onLog, LogLevel.Ok, "Pipeline execution completed", pipeline.Name);
-        return stats;
     }
 
-    private static List<List<TransformDefinition>> BuildTransformStages(List<TransformDefinition> transforms)
+    /// <summary>
+    /// Applies all transforms in a stage in parallel, each on a DataTable copy,
+    /// then merges their column changes back into a single result.
+    ///
+    /// Fixes the previous LastOrDefault() bug where only the last transform's
+    /// output survived — now all column additions and updates are preserved.
+    /// </summary>
+    private DataTable ApplyStage(
+        DataTable input,
+        List<TransformDefinition> stage,
+        CancellationToken cancellationToken)
     {
-        var stages = new List<List<TransformDefinition>>();
-        var resolved = new HashSet<string>();
-        var remaining = transforms.ToList();
+        if (stage.Count == 1)
+            return _transformFactory.Get(stage[0].Type).Apply(input, stage[0]);
 
-        while (remaining.Count > 0)
+        var tasks = stage
+            .Select(t => Task.Run(
+                () => (def: t, result: _transformFactory.Get(t.Type).Apply(input.Copy(), t)),
+                cancellationToken))
+            .ToArray();
+
+        Task.WaitAll(tasks, cancellationToken);
+
+        var merged = input.Copy();
+
+        foreach (var task in tasks)
         {
-            var stage = remaining
-                .Where(t => t.DependsOn.All(dep => resolved.Contains(dep)))
-                .ToList();
+            var result = task.Result.result;
 
-            if (stage.Count == 0) break;
-
-            stages.Add(stage);
-            foreach (var t in stage)
+            foreach (DataColumn col in result.Columns)
             {
-                resolved.Add(t.Id);
-                remaining.Remove(t);
+                if (!merged.Columns.Contains(col.ColumnName))
+                    merged.Columns.Add(col.ColumnName, col.DataType);
+
+                for (var i = 0; i < merged.Rows.Count && i < result.Rows.Count; i++)
+                    merged.Rows[i][col.ColumnName] = result.Rows[i][col.ColumnName];
             }
         }
 
-        return stages;
+        return merged;
     }
 
     private static DataTable ApplyMappings(DataTable source, List<FieldMapping> mappings)
@@ -151,6 +183,7 @@ public class PipelineRunner
             }
             result.Rows.Add(newRow);
         }
+
         return result;
     }
 

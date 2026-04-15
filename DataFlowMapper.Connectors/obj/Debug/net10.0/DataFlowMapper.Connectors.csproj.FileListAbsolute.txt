@@ -13,3 +13,4 @@
 /Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Connectors/obj/Debug/net10.0/refint/DataFlowMapper.Connectors.dll
 /Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Connectors/obj/Debug/net10.0/DataFlowMapper.Connectors.pdb
 /Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Connectors/obj/Debug/net10.0/ref/DataFlowMapper.Connectors.dll
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Connectors/obj/Debug/net10.0/DataFlowMapper.Connectors.sourcelink.json

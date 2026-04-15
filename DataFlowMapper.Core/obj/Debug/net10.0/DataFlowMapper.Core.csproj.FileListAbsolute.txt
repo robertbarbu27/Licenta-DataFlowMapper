@@ -9,3 +9,4 @@
 /Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Core/obj/Debug/net10.0/refint/DataFlowMapper.Core.dll
 /Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Core/obj/Debug/net10.0/DataFlowMapper.Core.pdb
 /Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Core/obj/Debug/net10.0/ref/DataFlowMapper.Core.dll
+/Users/robert/Facultate/Licenta/Licenta-DataFlowMapper/DataFlowMapper.Core/obj/Debug/net10.0/DataFlowMapper.Core.sourcelink.json

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DataFlowMapper.Connectors")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b92a101680eba4692d091ee8aed090919489ef8d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dcab5881e791f9016915bacc49496c5938038128")]
 [assembly: System.Reflection.AssemblyProductAttribute("DataFlowMapper.Connectors")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DataFlowMapper.Connectors")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

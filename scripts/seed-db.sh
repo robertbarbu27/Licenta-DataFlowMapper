@@ -8,6 +8,7 @@ DB="dataflow"
 USER="postgres"
 
 echo "Seeding database '$DB' in container '$CONTAINER'..."
+echo "This will generate 1 million orders + 100k customers. Please wait..."
 
 docker exec -i $CONTAINER psql -U $USER -d $DB << 'SQL'
 
@@ -49,82 +50,58 @@ CREATE TABLE orders (
 );
 
 -- ============================================================
--- CUSTOMERS (20 rows)
--- ============================================================
-
-INSERT INTO customers (first_name, last_name, email, country) VALUES
-  ('Alice',   'Popescu',   'alice@example.com',   'Romania'),
-  ('Bob',     'Ionescu',   'bob@example.com',     'Romania'),
-  ('Carol',   'Smith',     'carol@example.com',   'Germany'),
-  ('Dan',     'Müller',    'dan@example.com',     'Germany'),
-  ('Eva',     'Popa',      'eva@example.com',     'Romania'),
-  ('Frank',   'Brown',     'frank@example.com',   'UK'),
-  ('Grace',   'Lee',       'grace@example.com',   'USA'),
-  ('Hank',    'Tanaka',    'hank@example.com',    'Japan'),
-  ('Irina',   'Dumitrescu','irina@example.com',   'Romania'),
-  ('John',    'Doe',       'john@example.com',    'USA'),
-  ('Karen',   'White',     'karen@example.com',   'UK'),
-  ('Luca',    'Rossi',     'luca@example.com',    'Italy'),
-  ('Maria',   'Garcia',    'maria@example.com',   'Spain'),
-  ('Niko',    'Papadopoulos','niko@example.com',  'Greece'),
-  ('Olivia',  'Martin',    'olivia@example.com',  'France'),
-  ('Peter',   'Novak',     'peter@example.com',   'Slovakia'),
-  ('Quinn',   'Zhang',     'quinn@example.com',   'China'),
-  ('Radu',    'Stanescu',  'radu@example.com',    'Romania'),
-  ('Sofia',   'Ivanova',   'sofia@example.com',   'Bulgaria'),
-  ('Tom',     'Wilson',    'tom@example.com',     'USA');
-
--- ============================================================
 -- PRODUCTS (10 rows)
 -- ============================================================
 
 INSERT INTO products (name, category, price, stock) VALUES
-  ('Laptop Pro 15',        'Electronics', 1299.99,  42),
-  ('Wireless Mouse',       'Electronics',   29.99, 200),
-  ('Standing Desk',        'Furniture',    499.00,  15),
-  ('Mechanical Keyboard',  'Electronics',   89.99,  80),
-  ('Monitor 27inch',       'Electronics',  349.99,  30),
-  ('Office Chair',         'Furniture',    249.00,  20),
-  ('USB-C Hub',            'Electronics',   49.99, 150),
-  ('Webcam HD',            'Electronics',   79.99,  60),
-  ('Desk Lamp',            'Furniture',     34.99,  90),
-  ('Noise Cancelling Headphones', 'Electronics', 199.99, 45);
+  ('Laptop Pro 15',               'Electronics', 1299.99,  42),
+  ('Wireless Mouse',              'Electronics',   29.99, 200),
+  ('Standing Desk',               'Furniture',    499.00,  15),
+  ('Mechanical Keyboard',         'Electronics',   89.99,  80),
+  ('Monitor 27inch',              'Electronics',  349.99,  30),
+  ('Office Chair',                'Furniture',    249.00,  20),
+  ('USB-C Hub',                   'Electronics',   49.99, 150),
+  ('Webcam HD',                   'Electronics',   79.99,  60),
+  ('Desk Lamp',                   'Furniture',     34.99,  90),
+  ('Noise Cancelling Headphones', 'Electronics',  199.99,  45);
 
 -- ============================================================
--- ORDERS (30 rows)
+-- CUSTOMERS (100,000 rows via generate_series)
 -- ============================================================
 
-INSERT INTO orders (customer_id, product, quantity, unit_price, status) VALUES
-  (1,  'Laptop Pro 15',               1, 1299.99, 'completed'),
-  (1,  'Wireless Mouse',              2,   29.99, 'completed'),
-  (2,  'Standing Desk',               1,  499.00, 'pending'),
-  (3,  'Mechanical Keyboard',         1,   89.99, 'completed'),
-  (4,  'Monitor 27inch',              2,  349.99, 'shipped'),
-  (5,  'Wireless Mouse',              1,   29.99, 'pending'),
-  (6,  'Office Chair',                2,  249.00, 'completed'),
-  (7,  'Laptop Pro 15',               1, 1299.99, 'shipped'),
-  (8,  'Mechanical Keyboard',         3,   89.99, 'completed'),
-  (9,  'Monitor 27inch',              1,  349.99, 'cancelled'),
-  (10, 'USB-C Hub',                   2,   49.99, 'completed'),
-  (11, 'Webcam HD',                   1,   79.99, 'pending'),
-  (12, 'Desk Lamp',                   3,   34.99, 'completed'),
-  (13, 'Noise Cancelling Headphones', 1,  199.99, 'shipped'),
-  (14, 'Wireless Mouse',              4,   29.99, 'completed'),
-  (15, 'Standing Desk',               2,  499.00, 'cancelled'),
-  (16, 'Laptop Pro 15',               1, 1299.99, 'completed'),
-  (17, 'USB-C Hub',                   1,   49.99, 'pending'),
-  (18, 'Office Chair',                1,  249.00, 'completed'),
-  (19, 'Webcam HD',                   2,   79.99, 'shipped'),
-  (20, 'Mechanical Keyboard',         1,   89.99, 'completed'),
-  (1,  'Monitor 27inch',              1,  349.99, 'completed'),
-  (2,  'Noise Cancelling Headphones', 2,  199.99, 'pending'),
-  (3,  'USB-C Hub',                   3,   49.99, 'completed'),
-  (4,  'Desk Lamp',                   1,   34.99, 'completed'),
-  (5,  'Laptop Pro 15',               1, 1299.99, 'cancelled'),
-  (6,  'Webcam HD',                   1,   79.99, 'completed'),
-  (7,  'Wireless Mouse',              5,   29.99, 'shipped'),
-  (8,  'Standing Desk',               1,  499.00, 'completed'),
-  (9,  'Office Chair',                2,  249.00, 'pending');
+INSERT INTO customers (first_name, last_name, email, country)
+SELECT
+  (ARRAY['Alice','Bob','Carol','Dan','Eva','Frank','Grace','Hank','Irina','John',
+         'Karen','Luca','Maria','Niko','Olivia','Peter','Quinn','Radu','Sofia','Tom'])
+    [(i % 20) + 1],
+  (ARRAY['Popescu','Ionescu','Smith','Muller','Popa','Brown','Lee','Tanaka',
+         'Dumitrescu','Doe','White','Rossi','Garcia','Papadopoulos','Martin',
+         'Novak','Zhang','Stanescu','Ivanova','Wilson'])
+    [(i % 20) + 1],
+  'user' || i || '@example.com',
+  (ARRAY['Romania','Germany','USA','UK','France','Italy','Spain','Greece',
+         'Japan','China','Slovakia','Bulgaria'])
+    [(i % 12) + 1]
+FROM generate_series(1, 100000) AS s(i);
+
+-- ============================================================
+-- ORDERS (1,000,000 rows via generate_series)
+-- ============================================================
+
+INSERT INTO orders (customer_id, product, quantity, unit_price, status, ordered_at)
+SELECT
+  (i % 100000) + 1,
+  (ARRAY['Laptop Pro 15','Wireless Mouse','Standing Desk','Mechanical Keyboard',
+         'Monitor 27inch','Office Chair','USB-C Hub','Webcam HD','Desk Lamp',
+         'Noise Cancelling Headphones'])
+    [(i % 10) + 1],
+  (i % 5) + 1,
+  (ARRAY[1299.99, 29.99, 499.00, 89.99, 349.99, 249.00, 49.99, 79.99, 34.99, 199.99])
+    [(i % 10) + 1],
+  (ARRAY['completed','pending','shipped','cancelled'])
+    [(i % 4) + 1],
+  NOW() - ((random() * 365 * 2)::int || ' days')::interval
+FROM generate_series(1, 1000000) AS s(i);
 
 -- ============================================================
 -- TARGET TABLES (empty, ready to receive pipeline output)
