@@ -14,30 +14,55 @@ public class ExecutionController : ControllerBase
     private static readonly Dictionary<string, CancellationTokenSource> _executions = new();
 
     private readonly PipelineRunner _runner;
+    private readonly PipelineValidator _validator;
     private readonly PipelineStore _store;
     private readonly IHubContext<ExecutionHub> _hubContext;
 
-    public ExecutionController(PipelineRunner runner, PipelineStore store, IHubContext<ExecutionHub> hubContext)
+    public ExecutionController(
+        PipelineRunner runner,
+        PipelineValidator validator,
+        PipelineStore store,
+        IHubContext<ExecutionHub> hubContext)
     {
-        _runner = runner;
-        _store = store;
+        _runner    = runner;
+        _validator = validator;
+        _store     = store;
         _hubContext = hubContext;
     }
 
     [HttpPost("{id:guid}/execute")]
-    public IActionResult Execute(Guid id)
+    public async Task<IActionResult> Execute(Guid id, CancellationToken cancellationToken)
     {
         var pipeline = _store.GetById(id);
         if (pipeline == null) return NotFound();
+
+        // Validate before accepting — blocks on errors, allows warnings through
+        var errors = await _validator.ValidateAsync(pipeline, cancellationToken);
+        var blocking = errors.Where(e => e.Severity == ValidationSeverity.Error).ToList();
+
+        if (blocking.Count > 0)
+            return UnprocessableEntity(new { errors = blocking });
 
         var executionId = Guid.NewGuid().ToString();
         var cts = new CancellationTokenSource();
         _executions[executionId] = cts;
 
+        // Send any warnings via SignalR so the UI can display them
+        var warnings = errors.Where(e => e.Severity == ValidationSeverity.Warning).ToList();
+
         _ = Task.Run(async () =>
         {
             try
             {
+                foreach (var w in warnings)
+                    await _hubContext.Clients.Group(executionId).SendAsync("ReceiveLog", new
+                    {
+                        Level     = "Warn",
+                        Message   = w.Message,
+                        Timestamp = DateTime.UtcNow,
+                        Meta      = w.NodeId
+                    });
+
                 await _runner.ExecuteAsync(
                     pipeline,
                     async log =>
@@ -55,8 +80,8 @@ public class ExecutionController : ControllerBase
             {
                 await _hubContext.Clients.Group(executionId).SendAsync("ReceiveLog", new
                 {
-                    Level = "Error",
-                    Message = ex.Message,
+                    Level     = "Error",
+                    Message   = ex.Message,
                     Timestamp = DateTime.UtcNow
                 });
             }
@@ -66,7 +91,7 @@ public class ExecutionController : ControllerBase
             }
         });
 
-        return Accepted(new { executionId });
+        return Accepted(new { executionId, warnings });
     }
 
     [HttpPost("{id:guid}/cancel")]

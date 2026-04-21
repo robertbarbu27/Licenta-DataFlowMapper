@@ -9,4 +9,5 @@ public class ExecutionStats
     public int ChunksDone { get; set; }
     public long ElapsedMs { get; set; }
     public double ProgressPercent => ChunksTotal == 0 ? 0 : (double)ChunksDone / ChunksTotal * 100;
+    public List<string> IntegrityWarnings { get; } = new();
 }

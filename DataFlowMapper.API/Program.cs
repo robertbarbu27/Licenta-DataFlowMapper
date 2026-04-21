@@ -17,6 +17,7 @@ builder.Services.AddSingleton<PipelineStore>();
 builder.Services.AddSingleton<IConnectorFactory, ConnectorFactory>();
 builder.Services.AddSingleton<ITransformFactory, TransformFactory>();
 builder.Services.AddSingleton<PipelineRunner>();
+builder.Services.AddSingleton<PipelineValidator>();
 
 builder.Services.AddCors(options =>
 {
