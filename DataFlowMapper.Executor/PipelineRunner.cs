@@ -37,6 +37,16 @@ public class PipelineRunner
 
         await Task.WhenAll(branchTasks);
 
+        // Post-execution row reconciliation
+        var expected = stats.RowsRead;
+        var actual   = stats.RowsWritten + stats.RowsSkipped;
+        if (expected != actual)
+        {
+            var warning = $"Row reconciliation failed: read {expected}, wrote {stats.RowsWritten}, skipped {stats.RowsSkipped} (delta {expected - actual})";
+            lock (statsLock) stats.IntegrityWarnings.Add(warning);
+            await EmitLog(onLog, LogLevel.Warn, warning, null);
+        }
+
         await EmitLog(onLog, LogLevel.Ok, "Pipeline execution completed", pipeline.Name);
         return stats;
     }
@@ -88,10 +98,17 @@ public class PipelineRunner
         {
             await foreach (var (source, chunk) in channel.Reader.ReadAllAsync(cancellationToken))
             {
+                var rowsIn   = chunk.Rows.Count;
                 var processed = chunk;
 
                 foreach (var stage in subgraph.TransformStages)
                     processed = ExecutionGraph.ApplyStage(processed, stage, _transformFactory, cancellationToken);
+
+                // Per-chunk balance: rows dropped by Filter transforms count as skipped
+                var rowsOut     = processed.Rows.Count;
+                var chunkSkipped = rowsIn - rowsOut;
+                if (chunkSkipped > 0)
+                    lock (statsLock) stats.RowsSkipped += chunkSkipped;
 
                 var writeTasks = subgraph.Targets.Select(async target =>
                 {

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DataFlowMapper.Executor")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dcab5881e791f9016915bacc49496c5938038128")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f0e919f77310b2d90aefbb9c18b65203155b8d90")]
 [assembly: System.Reflection.AssemblyProductAttribute("DataFlowMapper.Executor")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DataFlowMapper.Executor")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
